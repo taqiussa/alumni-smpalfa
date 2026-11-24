@@ -10,5 +10,5 @@
         <p x-show="failed" x-cloak class="p-3 text-sm text-red-200">Video tidak tersedia atau tidak dapat dimuat.</p>
     </div>
 @else
-    <div class="grid aspect-video place-items-center rounded-xl border border-dashed border-zinc-300 text-sm text-zinc-500 dark:border-zinc-700">Video belum tersedia.</div>
+    <div class="grid aspect-video place-items-center rounded-xl border border-dashed border-slate-500 bg-slate-50 text-sm text-slate-600">Video belum tersedia.</div>
 @endif

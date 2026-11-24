@@ -7,12 +7,13 @@ use Livewire\Component;
 new #[Layout('layouts.public'), Title('Daftar Alumni Bercerita')] class extends Component {};
 ?>
 
-<main class="min-h-screen bg-slate-50 py-10">
+<main class="min-h-screen bg-slate-50 py-8 sm:py-10">
     <div class="mx-auto max-w-2xl px-4">
-        <a href="{{ route('home') }}" class="text-sm text-amber-700">← Alumni Bercerita</a>
-        <h1 class="mt-4 text-3xl font-bold">Pendaftaran karya</h1>
+        <a href="{{ route('home') }}" class="text-sm font-semibold text-primary-dark hover:text-primary">← Alumni Bercerita</a>
+        <h1 class="mt-4 text-3xl font-bold text-slate-900">Pendaftaran karya</h1>
+        <p class="mt-2 text-slate-600">Lengkapi data dan unggah video karya Anda.</p>
 
-        <form id="alumni-registration-form" x-data="alumniVideoRegistration()" @submit.prevent="submit" class="mt-6 space-y-5 rounded-2xl bg-white p-6 shadow-sm">
+        <form id="alumni-registration-form" x-data="alumniVideoRegistration()" @submit.prevent="submit" class="mt-6 space-y-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input name="nama_lengkap" label="Nama lengkap" required />
                 <flux:input name="tahun_kelulusan" label="Tahun kelulusan" type="number" required />
@@ -28,16 +29,16 @@ new #[Layout('layouts.public'), Title('Daftar Alumni Bercerita')] class extends 
                 <flux:input name="link_tiktok" label="Link TikTok (opsional)" type="url" />
             </div>
             <div class="space-y-2">
-                <label for="alumni-video" class="text-sm font-medium text-zinc-800">Video asli MP4/MOV (maks. 100 MB)</label>
-                <input id="alumni-video" x-ref="video" name="video" type="file" accept="video/mp4,video/quicktime,.mp4,.mov" required class="block w-full rounded-lg border border-zinc-300 bg-white p-2 text-sm" :disabled="loading" />
-                <p class="text-sm text-zinc-600">Video langsung dikirim dari browser ke penyimpanan privat dan tidak melalui server aplikasi.</p>
+                <label for="alumni-video" class="text-sm font-medium text-slate-700">Video asli MP4/MOV (maks. 100 MB)</label>
+                <input id="alumni-video" x-ref="video" name="video" type="file" accept="video/mp4,video/quicktime,.mp4,.mov" required class="block w-full rounded-lg border border-slate-500 bg-white p-2 text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-primary-light/20 file:px-3 file:py-1.5 file:font-medium file:text-primary-dark hover:border-slate-600 focus:border-primary-dark focus:ring-2 focus:ring-primary-dark/30" :disabled="loading" />
+                <p class="text-sm text-slate-600">Video langsung dikirim dari browser ke penyimpanan privat dan tidak melalui server aplikasi.</p>
             </div>
             <flux:checkbox name="keaslian" value="1" label="Saya menyatakan karya ini asli." required />
             <flux:checkbox name="persetujuan_publikasi" value="1" label="Saya menyetujui publikasi karya." required />
             <flux:checkbox name="patuh_ketentuan" value="1" label="Saya mematuhi ketentuan program." required />
-            <div x-show="loading" x-cloak class="space-y-2 rounded-xl bg-amber-50 p-4 text-sm text-amber-950">
+            <div x-show="loading" x-cloak class="space-y-2 rounded-xl border border-primary-light bg-primary-light/15 p-4 text-sm text-slate-700">
                 <div class="flex items-center justify-between gap-4"><span x-text="status"></span><span class="font-semibold" x-text="progress + '%'"></span></div>
-                <div class="h-2 overflow-hidden rounded-full bg-amber-200"><div class="h-full bg-amber-600 transition-[width] duration-200" :style="`width: ${progress}%`"></div></div>
+                <div class="h-2 overflow-hidden rounded-full bg-primary-light/30"><div class="h-full bg-primary-dark transition-[width] duration-200" :style="`width: ${progress}%`"></div></div>
             </div>
             <p x-show="error" x-cloak class="rounded-lg bg-red-50 p-3 text-sm text-red-700" x-text="error"></p>
             <div class="flex flex-wrap gap-3"><flux:button type="submit" variant="primary" x-bind:disabled="loading">Kirim pendaftaran</flux:button><flux:button type="button" variant="ghost" x-show="loading" @click="cancel" x-bind:disabled="cancelling">Batalkan upload</flux:button></div>

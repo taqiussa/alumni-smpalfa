@@ -6,61 +6,97 @@
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-zinc-50: #fafafa;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
+    /* Identitas visual SMP Al Musyaffa. */
+    --color-primary-light: #0ad2c8;
+    --color-primary: #15919b;
+    --color-primary-dark: #0c647a;
+    --color-secondary-light: #ffff66;
+    --color-secondary: #ffcc00;
+    --color-secondary-dark: #ff7700;
+    --color-brand-accent-light: #c5f0a8;
+    --color-brand-accent: #16a85c;
+    --color-brand-accent-dark: #00612f;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    /* Flux semantic tokens: dark primary surface, white foreground. */
+    --color-accent: var(--color-primary-dark);
+    --color-accent-content: var(--color-primary-dark);
     --color-accent-foreground: var(--color-white);
 }
 
-@layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-    }
-}
-
 @layer base {
+    :root {
+        color-scheme: light;
+    }
+
+    html,
+    body {
+        @apply bg-slate-50 text-slate-700;
+        color-scheme: light;
+    }
 
     *,
     ::after,
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+        border-color: var(--color-slate-200, currentColor);
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        color-scheme: light;
     }
 }
 
-[data-flux-field]:not(ui-radio, ui-checkbox) {
-    @apply grid gap-2;
-}
+@layer components {
+    /* Normalize Flux controls so labels and boundaries remain visible on mobile. */
+    [data-flux-field]:not(ui-radio, ui-checkbox) {
+        @apply grid gap-2;
+    }
 
-[data-flux-label] {
-    @apply  !mb-0 !leading-tight;
-}
+    [data-flux-label] {
+        @apply !mb-0 !leading-tight !text-slate-700;
+    }
 
-input:focus[data-flux-control],
-textarea:focus[data-flux-control],
-select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
-}
+    input[data-flux-control],
+    textarea[data-flux-control],
+    select[data-flux-control] {
+        @apply !border-slate-500 !bg-white !text-slate-700 !shadow-none placeholder:!text-slate-500 hover:!border-slate-600 focus:!border-primary-dark focus:!ring-2 focus:!ring-primary-dark/30 disabled:!border-slate-300 disabled:!bg-slate-100 disabled:!text-slate-500;
+    }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+    input[data-flux-control]:focus,
+    textarea[data-flux-control]:focus,
+    select[data-flux-control]:focus {
+        @apply !outline-hidden !ring-2 !ring-primary-dark/30 !ring-offset-0;
+    }
+
+    [data-flux-control][data-invalid] {
+        @apply !border-red-600 focus:!ring-red-600/30;
+    }
+
+    [data-flux-control] option {
+        @apply bg-white text-slate-700;
+    }
+
+    ui-card {
+        @apply !border-slate-200 !bg-white !text-slate-700 shadow-sm;
+    }
+
+    ui-card [data-flux-heading] {
+        @apply !text-slate-800;
+    }
+
+    ui-card [data-flux-subheading] {
+        @apply !text-slate-600;
+    }
+
+    [data-flux-sidebar],
+    [data-flux-header] {
+        @apply !border-slate-200 !bg-white !text-slate-700;
+    }
+}
