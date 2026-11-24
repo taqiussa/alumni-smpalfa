@@ -16,17 +16,17 @@ Route::prefix('alumni/daftar')->name('alumni.registration.')->group(function ():
 Route::livewire('/alumni/sukses/{kode}', 'pages::alumni.success')->name('alumni.success');
 Route::livewire('/alumni/revisi/{kode}/{token}', 'pages::alumni.revision')->name('alumni.revision');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth:web', 'active-user'])->group(function () {
     Route::redirect('dashboard', 'alumni/dashboard')->name('dashboard');
     Route::prefix('alumni')->name('alumni.')->group(function (): void {
-        Route::livewire('dashboard', 'pages::alumni.dashboard')->middleware('can:alumni.view')->name('dashboard');
-        Route::livewire('peserta', 'pages::alumni.participants')->middleware('can:alumni.view')->name('participants');
-        Route::livewire('peserta/{peserta}', 'pages::alumni.participant-detail')->middleware('can:alumni.view')->name('participants.show');
-        Route::livewire('kurasi', 'pages::alumni.curation')->middleware('can:alumni.curate')->name('curation');
-        Route::livewire('publikasi', 'pages::alumni.publications')->middleware('can:alumni.publish')->name('publications');
-        Route::livewire('penilaian', 'pages::alumni.scoring')->middleware('can:alumni.score')->name('scoring');
-        Route::livewire('pengaturan', 'pages::alumni.settings')->middleware('can:alumni.manage')->name('settings');
-        Route::get('ekspor/peserta', AlumniExportController::class)->middleware('can:alumni.export')->name('export.participants');
+        Route::livewire('dashboard', 'pages::alumni.dashboard')->name('dashboard');
+        Route::livewire('peserta', 'pages::alumni.participants')->name('participants');
+        Route::livewire('peserta/{peserta}', 'pages::alumni.participant-detail')->name('participants.show');
+        Route::livewire('kurasi', 'pages::alumni.curation')->name('curation');
+        Route::livewire('publikasi', 'pages::alumni.publications')->name('publications');
+        Route::livewire('penilaian', 'pages::alumni.scoring')->name('scoring');
+        Route::livewire('pengaturan', 'pages::alumni.settings')->name('settings');
+        Route::get('ekspor/peserta', AlumniExportController::class)->name('export.participants');
     });
 });
 

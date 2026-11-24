@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureActiveUser;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias(['permission' => PermissionMiddleware::class]);
+        $middleware->alias([
+            'active-user' => EnsureActiveUser::class,
+            'permission' => PermissionMiddleware::class,
+        ]);
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('alumni:cleanup-expired-uploads')->hourly()->withoutOverlapping();

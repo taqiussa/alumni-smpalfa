@@ -12,7 +12,7 @@ class AlumniPesertaPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,7 +20,7 @@ class AlumniPesertaPolicy
      */
     public function view(User $user, AlumniPeserta $alumniPeserta): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class AlumniPesertaPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -36,7 +36,7 @@ class AlumniPesertaPolicy
      */
     public function update(User $user, AlumniPeserta $alumniPeserta): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -44,7 +44,7 @@ class AlumniPesertaPolicy
      */
     public function delete(User $user, AlumniPeserta $alumniPeserta): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -52,7 +52,7 @@ class AlumniPesertaPolicy
      */
     public function restore(User $user, AlumniPeserta $alumniPeserta): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -60,6 +60,6 @@ class AlumniPesertaPolicy
      */
     public function forceDelete(User $user, AlumniPeserta $alumniPeserta): bool
     {
-        return false;
+        return true;
     }
 }
