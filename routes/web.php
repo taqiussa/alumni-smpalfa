@@ -1,10 +1,18 @@
 <?php
 
+use App\Http\Controllers\Alumni\CancelAlumniVideoUploadController;
+use App\Http\Controllers\Alumni\ConfirmAlumniRegistrationController;
+use App\Http\Controllers\Alumni\PresignAlumniVideoController;
 use App\Http\Controllers\AlumniExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::alumni.landing')->name('home');
 Route::livewire('/alumni/daftar', 'pages::alumni.register')->middleware('throttle:alumni-registration')->name('alumni.register');
+Route::prefix('alumni/daftar')->name('alumni.registration.')->group(function (): void {
+    Route::post('presign', PresignAlumniVideoController::class)->middleware('throttle:alumni-video-presign')->name('presign');
+    Route::post('confirm', ConfirmAlumniRegistrationController::class)->middleware('throttle:alumni-video-confirm')->name('confirm');
+    Route::delete('upload', CancelAlumniVideoUploadController::class)->middleware('throttle:alumni-video-confirm')->name('cancel');
+});
 Route::livewire('/alumni/sukses/{kode}', 'pages::alumni.success')->name('alumni.success');
 Route::livewire('/alumni/revisi/{kode}/{token}', 'pages::alumni.revision')->name('alumni.revision');
 

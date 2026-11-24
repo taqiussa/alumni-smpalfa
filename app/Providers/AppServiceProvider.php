@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         RateLimiter::for('alumni-registration', fn ($request): Limit => Limit::perMinute(3)->by($request->ip()));
+        RateLimiter::for('alumni-video-presign', fn ($request): Limit => Limit::perMinute(3)->by($request->ip().'|'.$request->session()->getId()));
+        RateLimiter::for('alumni-video-confirm', fn ($request): Limit => Limit::perMinute(5)->by($request->ip().'|'.$request->session()->getId()));
     }
 
     /**

@@ -15,7 +15,22 @@ class AlumniPeserta extends Model
 
     protected $table = 'alumni_peserta';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'periode',
+        'kode_registrasi',
+        'nama_lengkap',
+        'tahun_kelulusan',
+        'whatsapp',
+        'domisili',
+        'status',
+        'platform_sosial',
+        'username_instagram',
+        'link_instagram',
+        'username_tiktok',
+        'link_tiktok',
+        'revision_token',
+        'registered_at',
+    ];
 
     protected function casts(): array
     {

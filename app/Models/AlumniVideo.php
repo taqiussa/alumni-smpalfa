@@ -14,7 +14,21 @@ class AlumniVideo extends Model
 
     protected $table = 'alumni_video';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'peserta_id',
+        'versi',
+        'disk',
+        'object_key',
+        'original_name',
+        'mime_type',
+        'ukuran',
+        'durasi_detik',
+        'lebar',
+        'tinggi',
+        'orientasi',
+        'aktif',
+        'uploaded_at',
+    ];
 
     protected function casts(): array
     {
