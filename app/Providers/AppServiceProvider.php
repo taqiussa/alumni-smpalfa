@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Routing\UrlGenerator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,12 +25,17 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(UrlGenerator $url): void
     {
         $this->configureDefaults();
-        RateLimiter::for('alumni-registration', fn ($request): Limit => Limit::perMinute(3)->by($request->ip()));
-        RateLimiter::for('alumni-video-presign', fn ($request): Limit => Limit::perMinute(3)->by($request->ip().'|'.$request->session()->getId()));
-        RateLimiter::for('alumni-video-confirm', fn ($request): Limit => Limit::perMinute(5)->by($request->ip().'|'.$request->session()->getId()));
+        if (env('APP_ENV') !== 'local') {
+            $url->forceScheme('https');
+        } else {
+            $url->forceScheme('http');
+        }
+        RateLimiter::for('alumni-registration', fn($request): Limit => Limit::perMinute(3)->by($request->ip()));
+        RateLimiter::for('alumni-video-presign', fn($request): Limit => Limit::perMinute(3)->by($request->ip() . '|' . $request->session()->getId()));
+        RateLimiter::for('alumni-video-confirm', fn($request): Limit => Limit::perMinute(5)->by($request->ip() . '|' . $request->session()->getId()));
     }
 
     /**
@@ -42,14 +49,15 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
+        Password::defaults(
+            fn(): ?Password => app()->isProduction()
+                ? Password::min(12)
                 ->mixedCase()
                 ->letters()
                 ->numbers()
                 ->symbols()
                 ->uncompromised()
-            : null,
+                : null,
         );
     }
 }
