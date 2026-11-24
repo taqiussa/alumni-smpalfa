@@ -1,0 +1,4 @@
+<?php
+use App\Models\AlumniPeserta; use Livewire\Attributes\Layout; use Livewire\Attributes\Title; use Livewire\Component;
+new #[Layout('layouts.public'), Title('Pendaftaran berhasil')] class extends Component { public AlumniPeserta $peserta; public function mount(string $kode): void { $this->peserta=AlumniPeserta::where('kode_registrasi',$kode)->firstOrFail(); }}; ?>
+<main class="grid min-h-screen place-items-center bg-amber-50 p-6"><section class="max-w-lg rounded-2xl bg-white p-8 text-center shadow-sm"><p class="text-amber-700">Pendaftaran berhasil</p><h1 class="mt-2 text-3xl font-bold">Terima kasih, {{ $peserta->nama_lengkap }}</h1><p class="mt-4 text-slate-600">Simpan kode peserta berikut.</p><code class="mt-6 block rounded-xl bg-slate-100 p-4 text-xl font-bold">{{ $peserta->kode_registrasi }}</code></section></main>

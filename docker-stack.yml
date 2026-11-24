@@ -1,0 +1,39 @@
+services:
+  smpalfa_alumni:
+    image: taqiussa/smpalfa:alumni
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      CADDY_AUTO_HTTPS: "off"
+      CADDY_SERVER_ROOT: /var/www/html/public
+      HEALTHCHECK_PATH: /up
+      LOG_CHANNEL: stderr
+      PHP_DATE_TIMEZONE: Asia/Jakarta
+      PHP_MEMORY_LIMIT: 256M
+      PHP_UPLOAD_MAX_FILE_SIZE: 200M
+      PHP_POST_MAX_SIZE: 200M
+      PHP_MAX_EXECUTION_TIME: "600"
+      PHP_MAX_INPUT_TIME: "600"
+      PHP_OPCACHE_ENABLE: "1"
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
+      AUTORUN_ENABLED: "true"
+      AUTORUN_LARAVEL_CONFIG_CACHE: "true"
+      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
+      AUTORUN_LARAVEL_VIEW_CACHE: "true"
+    networks: [web]
+    deploy:
+      replicas: 2
+      update_config: {order: start-first, parallelism: 1, delay: 10s, monitor: 10s, failure_action: rollback}
+      rollback_config: {order: start-first, parallelism: 1, monitor: 10s}
+      restart_policy: {condition: any, delay: 5s, max_attempts: 3}
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=web
+        - traefik.http.routers.smpalfa_alumni.rule=Host(`${ALUMNI_DOMAIN:?Set ALUMNI_DOMAIN in .env}`)
+        - traefik.http.routers.smpalfa_alumni.entrypoints=websecure
+        - traefik.http.routers.smpalfa_alumni.tls.certresolver=letsencrypt
+        - traefik.http.services.smpalfa_alumni.loadbalancer.server.port=8080
+networks:
+  web:
+    external: true

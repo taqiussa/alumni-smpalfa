@@ -1,0 +1,79 @@
+########################
+# Hidden junk / caches
+########################
+.cache
+.tmp
+.temp
+*.log
+
+########################
+# VCS
+########################
+.git
+.gitignore
+.github
+
+########################
+# OS junk
+########################
+.DS_Store
+Thumbs.db
+
+########################
+# Secrets
+########################
+.env
+.env.*
+/.env
+
+########################
+# Dependencies (rebuilt inside container)
+########################
+vendor
+node_modules
+
+########################
+# User data (NEVER bake into image)
+########################
+storage/app
+public/storage
+
+########################
+# Laravel runtime cache
+########################
+storage/framework/cache/*
+!storage/framework/cache/.gitignore
+storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+storage/framework/views/*
+!storage/framework/views/.gitignore
+storage/logs/*
+!storage/logs/.gitignore
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+########################
+# Frontend artifacts
+########################
+public/build
+public/hot
+
+########################
+# Testing / local tools
+########################
+tests
+phpunit.xml
+coverage
+*.sqlite
+
+########################
+# IDE
+########################
+.vscode
+.idea
+
+########################
+# Docker meta
+########################
+docker-compose*
+.dockerignore
