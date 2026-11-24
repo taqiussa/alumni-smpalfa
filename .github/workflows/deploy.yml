@@ -130,7 +130,7 @@ jobs:
             docker service ps "$service" \
               --filter desired-state=running \
               --format '{{.ID}}' \
-              | head -n 1
+              | sed -n '1p'
           }
 
           get_running_task_state() {
@@ -139,7 +139,7 @@ jobs:
             docker service ps "$service" \
               --filter desired-state=running \
               --format '{{.CurrentState}}' \
-              | head -n 1
+              | sed -n '1p'
           }
 
           get_running_task_image() {
@@ -148,7 +148,7 @@ jobs:
             docker service ps "$service" \
               --filter desired-state=running \
               --format '{{.Image}}' \
-              | head -n 1
+              | sed -n '1p'
           }
 
           get_running_task_count() {
@@ -206,14 +206,10 @@ jobs:
             PREVIOUS_TASK_IMAGES["$SERVICE"]="$(get_running_task_image "$SERVICE")"
             PREVIOUS_TASK_STATES["$SERVICE"]="$(get_running_task_state "$SERVICE")"
 
-            if [ -z "${PREVIOUS_TASK_IDS[$SERVICE]}" ]; then
-              echo "ERROR: No running task for $SERVICE"
-              exit 1
-            fi
-
-            if [[ "${PREVIOUS_TASK_STATES[$SERVICE]}" != Running* ]]; then
-              echo "ERROR: Previous task is not Running: $SERVICE"
-              exit 1
+            if [ -z "${PREVIOUS_TASK_IDS[$SERVICE]}" ] ||
+               [[ "${PREVIOUS_TASK_STATES[$SERVICE]}" != Running* ]]; then
+              echo "WARNING: No healthy previous task for $SERVICE; attempting recovery deployment"
+              docker service ps --no-trunc "$SERVICE"
             fi
 
             if [ -z "${PREVIOUS_DIGESTS[$SERVICE]}" ] ||
@@ -329,7 +325,7 @@ jobs:
                 return 1
               fi
 
-              if [ "$task_id" = "$old_task_id" ]; then
+              if [ -n "$old_task_id" ] && [ "$task_id" = "$old_task_id" ]; then
                 echo "Waiting for replacement task..."
                 sleep 10
                 continue
@@ -392,10 +388,12 @@ jobs:
               --update-monitor 10s \
               --detach=false \
               "$SERVICE"; then
+              docker service ps --no-trunc "$SERVICE" || true
               rollback_services
             fi
 
             if ! check_deployment "$SERVICE" "$OLD_TASK_ID"; then
+              docker service ps --no-trunc "$SERVICE" || true
               rollback_services
             fi
 
@@ -403,6 +401,7 @@ jobs:
 
             if [ "$SERVICE_IMAGE" != "$IMAGE" ]; then
               echo "ERROR: $SERVICE image is $SERVICE_IMAGE, expected $IMAGE"
+              docker service ps --no-trunc "$SERVICE" || true
               rollback_services
             fi
 
