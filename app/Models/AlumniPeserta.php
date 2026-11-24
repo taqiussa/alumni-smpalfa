@@ -28,6 +28,9 @@ class AlumniPeserta extends Model
         'link_instagram',
         'username_tiktok',
         'link_tiktok',
+        'status_kurasi',
+        'status_publikasi',
+        'status_penilaian',
         'revision_token',
         'registered_at',
     ];
@@ -40,6 +43,11 @@ class AlumniPeserta extends Model
     public function videos(): HasMany
     {
         return $this->hasMany(AlumniVideo::class, 'peserta_id');
+    }
+
+    public function activeVideo(): HasOne
+    {
+        return $this->hasOne(AlumniVideo::class, 'peserta_id')->where('aktif', true)->latestOfMany('versi');
     }
 
     public function kurasi(): HasMany

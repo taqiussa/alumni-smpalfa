@@ -47,8 +47,9 @@ test('an active user without alumni permissions can access every internal alumni
     $this->get(route('alumni.curation'))->assertOk();
     $this->get(route('alumni.publications'))->assertOk();
     $this->get(route('alumni.scoring'))->assertOk();
-    $this->get(route('alumni.settings'))->assertOk();
     $this->get(route('alumni.export.participants'))->assertOk();
+    $this->get('/alumni/pengaturan')->assertNotFound();
+    $this->get('/settings/profile')->assertNotFound();
 });
 
 test('inactive SIAKAD accounts are rejected at login and on protected routes', function (): void {

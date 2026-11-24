@@ -1,13 +1,6 @@
 <?php
-
-use Livewire\Component;
-
-new class extends Component
-{
-    //
-};
+use App\Models\AlumniPeserta; use Livewire\Attributes\Layout; use Livewire\Attributes\Title; use Livewire\Component;
+new #[Layout('layouts.public'), Title('Revisi Karya Alumni')] class extends Component { public AlumniPeserta $peserta; public function mount(string $kode,string $token):void{$this->peserta=AlumniPeserta::query()->where('kode_registrasi',$kode)->firstOrFail();abort_unless(hash_equals($this->peserta->revision_token,$token)&&$this->peserta->status_kurasi==='revisi',404);} };
 ?>
-
-<div>
-    {{-- Do what you can, with what you have, where you are. - Theodore Roosevelt --}}
-</div>
+<main class="grid min-h-screen place-items-center bg-amber-50 p-5"><section class="w-full max-w-xl rounded-2xl bg-white p-6 shadow-sm" x-data="alumniRevision()"><p class="text-sm text-amber-700">Revisi karya</p><h1 class="mt-2 text-2xl font-bold">{{ $peserta->nama_lengkap }}</h1><p class="mt-2 text-sm text-slate-600">Unggah video pengganti MP4/MOV maksimal 100 MB. Video dikirim langsung ke penyimpanan.</p><input class="mt-5 block w-full rounded-lg border p-2 text-sm" x-ref="file" type="file" accept="video/mp4,video/quicktime,.mp4,.mov" :disabled="loading"><p x-show="loading" class="mt-3 text-sm" x-text="status + ' ' + progress + '%' "></p><p x-show="error" class="mt-3 text-sm text-red-700" x-text="error"></p><button @click="submit" :disabled="loading" class="mt-5 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white">Kirim revisi</button></section>
+@script<script>Alpine.data('alumniRevision',()=>({loading:false,progress:0,status:'',error:'',async submit(){const file=this.$refs.file.files[0];if(!file){this.error='Pilih video terlebih dahulu.';return}this.loading=true;this.error='';try{this.status='Mempersiapkan upload…';const presign=await this.json(@js(route('alumni.registration.presign')),{file_name:file.name,content_type:file.type,size:file.size});this.status='Mengunggah video…';await new Promise((resolve,reject)=>{const xhr=new XMLHttpRequest();xhr.open('PUT',presign.upload_url);Object.entries(presign.headers).forEach(([k,v])=>xhr.setRequestHeader(k,v));xhr.upload.onprogress=e=>{if(e.lengthComputable)this.progress=Math.round(e.loaded/e.total*100)};xhr.onload=()=>xhr.status>=200&&xhr.status<300?resolve():reject(new Error('Upload gagal.'));xhr.onerror=()=>reject(new Error('Koneksi penyimpanan gagal.'));xhr.send(file)});this.status='Menyimpan revisi…';await this.json(@js(route('alumni.revision.confirm')),{kode:@js($peserta->kode_registrasi),token:@js($peserta->revision_token),upload_token:presign.upload_token,object_key:presign.object_key});window.location.assign(@js(route('alumni.success',$peserta->kode_registrasi)))}catch(e){this.error=e.message||'Revisi gagal.';this.loading=false}},async json(url,body){const r=await fetch(url,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':@js(csrf_token())},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.errors?Object.values(p.errors).flat().join(' '):p.message);return p}}))</script>@endscript</main>

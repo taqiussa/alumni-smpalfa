@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Alumni\AlumniVideoAccessController;
 use App\Http\Controllers\Alumni\CancelAlumniVideoUploadController;
 use App\Http\Controllers\Alumni\ConfirmAlumniRegistrationController;
+use App\Http\Controllers\Alumni\ConfirmAlumniRevisionController;
 use App\Http\Controllers\Alumni\PresignAlumniVideoController;
 use App\Http\Controllers\AlumniExportController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +17,7 @@ Route::prefix('alumni/daftar')->name('alumni.registration.')->group(function ():
 });
 Route::livewire('/alumni/sukses/{kode}', 'pages::alumni.success')->name('alumni.success');
 Route::livewire('/alumni/revisi/{kode}/{token}', 'pages::alumni.revision')->name('alumni.revision');
+Route::post('/alumni/revisi/confirm', ConfirmAlumniRevisionController::class)->middleware('throttle:alumni-video-confirm')->name('alumni.revision.confirm');
 
 Route::middleware(['auth:web', 'active-user'])->group(function () {
     Route::redirect('dashboard', 'alumni/dashboard')->name('dashboard');
@@ -25,8 +28,9 @@ Route::middleware(['auth:web', 'active-user'])->group(function () {
         Route::livewire('kurasi', 'pages::alumni.curation')->name('curation');
         Route::livewire('publikasi', 'pages::alumni.publications')->name('publications');
         Route::livewire('penilaian', 'pages::alumni.scoring')->name('scoring');
-        Route::livewire('pengaturan', 'pages::alumni.settings')->name('settings');
         Route::get('ekspor/peserta', AlumniExportController::class)->name('export.participants');
+        Route::get('video/{video}/putar', [AlumniVideoAccessController::class, 'play'])->name('video.play');
+        Route::get('video/{video}/unduh', [AlumniVideoAccessController::class, 'download'])->name('video.download');
     });
 });
 

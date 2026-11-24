@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AlumniUploadSession;
+use App\Models\AlumniVideo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -82,6 +83,19 @@ class AlumniVideoStorage
     public function delete(string $objectKey): void
     {
         Storage::disk(config('alumni.disk_private'))->delete($objectKey);
+    }
+
+    public function playbackUrl(AlumniVideo $video): string
+    {
+        return Storage::disk($video->disk)->temporaryUrl($video->object_key, now()->addMinutes(10));
+    }
+
+    public function downloadUrl(AlumniVideo $video, string $filename): string
+    {
+        return Storage::disk($video->disk)->temporaryUrl($video->object_key, now()->addMinutes(5), [
+            'ResponseContentDisposition' => 'attachment; filename="'.$filename.'"',
+            'ResponseContentType' => $video->mime_type,
+        ]);
     }
 
     private function sanitizePeriod(string $periode): string
