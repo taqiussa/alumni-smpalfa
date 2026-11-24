@@ -12,7 +12,7 @@ test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
     $response = $this->post(route('login.store'), [
-        'email' => $user->email,
+        'username' => $user->username,
         'password' => 'password',
     ]);
 
@@ -27,11 +27,24 @@ test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
     $response = $this->post(route('login.store'), [
-        'email' => $user->email,
+        'username' => $user->username,
         'password' => 'wrong-password',
     ]);
 
-    $response->assertSessionHasErrorsIn('email');
+    $response->assertSessionHasErrorsIn('username');
+
+    $this->assertGuest();
+});
+
+test('users can not authenticate with an NIS field', function () {
+    $user = User::factory()->create();
+
+    $response = $this->post(route('login.store'), [
+        'nis' => $user->username,
+        'password' => 'password',
+    ]);
+
+    $response->assertSessionHasErrorsIn('username');
 
     $this->assertGuest();
 });
